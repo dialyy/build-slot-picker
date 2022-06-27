@@ -1,17 +1,22 @@
-import { Box, Button, Drawer, Typography } from "@mui/material";
-
 import { useState } from "react";
 
-// Assume data arrives like this
+import { Box, Button, Drawer, Typography, Stack, Alert } from "@mui/material";
 
-// {
-//   morning: ["10:00 am", "10:15 am", "10:30 am", "10:45 am", "11:00 am"],
-//   afternoon: ["12:00 pm", "12:15 pm", "12:30 pm", "12:45 pm", "01:00 pm"],
-//   evening: ["08:00 pm", "08:15 pm", "08:30 pm", "08:45 pm", "09:00 pm"],
-// };
+import SlotPicker from "./components/slotPicker";
+import { Slot } from "./components/slotPicker/types";
 
 function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [slot, setSlot] = useState<Slot>({
+    day: null,
+    partOfDay: "",
+    hour: null,
+  });
+
+  const handleSelectedSlot = (s: Slot): void => {
+    setSlot(s);
+    setIsModalOpen(false);
+  };
 
   return (
     <Box
@@ -32,6 +37,20 @@ function App() {
         Open Modal
       </Button>
 
+      {!isModalOpen && slot.day !== null && (
+        <Stack sx={{ width: "100%" }} spacing={2}>
+          <Alert severity="info">
+            <Typography style={{ fontSize: 20, color: "black" }}>
+              Chosen Time
+            </Typography>
+            <hr></hr>
+            <p>Time : {slot.hour} </p>
+            <p>Part of Day : {slot.partOfDay} </p>
+            <p>Day : {slot.day} </p>
+          </Alert>
+        </Stack>
+      )}
+
       <Drawer
         anchor="bottom"
         open={isModalOpen}
@@ -40,7 +59,7 @@ function App() {
           sx: { padding: 4 },
         }}
       >
-        <Typography fontWeight={500}>Slot picker should be here.</Typography>
+        <SlotPicker selectedSlot={handleSelectedSlot} />
       </Drawer>
     </Box>
   );
